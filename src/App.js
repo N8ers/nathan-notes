@@ -1,3 +1,4 @@
+import NotesContainer from "./components/NotesContainer.js";
 import "./App.css";
 
 function App() {
@@ -5,6 +6,8 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Nathan Notes</h1>
+
+        <NotesContainer />
       </header>
     </div>
   );
