@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -7,31 +7,42 @@ import remarkGfm from "remark-gfm";
 
 import TabPanel from "./TabPanel";
 
-const markdown = `A paragraph with *emphasis* and **strong importance**.
-
-> A block quote with ~strikethrough~ and a URL: https://reactjs.org.
-
-* Lists
-* [ ] todo
-* [x] done
-
-A table:
-
-| a | b |
-| - | - |
-`;
+import CypressNotes from "../markdown/CypressNotes.md";
+import VueNotes from "../markdown/VueNotes.md";
+import PythonNotes from "../markdown/PythonNotes.md";
 
 export default function BasicTabs() {
-  const [value, setValue] = React.useState(0);
+  const [cypressNotes, setCypressNotes] = useState("");
+  const [vueNotes, setVueNotes] = useState("");
+  const [pythonNotes, setPythonNotes] = useState("");
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    fetch(CypressNotes)
+      .then((res) => res.text())
+      .then((text) => setCypressNotes(text));
+  });
+
+  useEffect(() => {
+    fetch(VueNotes)
+      .then((res) => res.text())
+      .then((text) => setVueNotes(text));
+  });
+
+  useEffect(() => {
+    fetch(PythonNotes)
+      .then((res) => res.text())
+      .then((text) => setPythonNotes(text));
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const tabs = [
-    { label: "Vue", index: 0, notes: "./vueNotes.md" },
-    { label: "Cypress", index: 1, notes: "cypress notes" },
-    { label: "Python", index: 2, notes: "python notes" },
+    { label: "Vue", index: 0, notes: vueNotes },
+    { label: "Cypress", index: 1, notes: cypressNotes },
+    { label: "Python", index: 2, notes: pythonNotes },
     { label: "Flask", index: 3, notes: "flask notes" },
     { label: "Postgres", index: 4, notes: "postgres notes" },
   ];
@@ -49,8 +60,7 @@ export default function BasicTabs() {
       {tabs.map((tab) => {
         return (
           <TabPanel key={tab.index} value={value} index={tab.index}>
-            {tab.notes}
-            <ReactMarkdown children={markdown} remarkPlugins={[remarkGfm]} />
+            <ReactMarkdown children={tab.notes} remarkPlugins={[remarkGfm]} />
           </TabPanel>
         );
       })}
